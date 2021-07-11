@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>Demo</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<style>
+#input-father {
+    width: 25vw;
+    margin-left: 2vw;
+    position: absolute;
+}
+
+/* #input {
+    width: 25vw;
+    margin-left: 2vw;
+    position: absolute;
+} */
+
+#output-father {
+    width: 67vw;
+    height: 90vh;
+    margin-left: 30vw;
+    position: absolute;
+    /* background-color: #212a4d; */
+}
+#output {
+    font: caption;
+    height: 80vh;
+    border-style: solid;
+    border-color: #112D4E;
+    border-width: 2px;
+    overflow:auto;
+    background-color: #F9F7F7;
+    font-size: 16px;
+}
+
+.plane{
+    width:25vw;
+    overflow: hidden;
+}
+
+
+</style>
+<body>
+<div id="input-father">
+<h3>INPUT</h3>
+<div id="input">
+    <div class="plane">
+        <div id="step0title" style="height: 22px; background-color: #FFE08B; text-align: center;" onclick="onTileClick0()">
+            Step 0: 数据导入与处理
+        </div>
+        <div id="step0content" style="height:0px;background-color: #FFFAB9;transition: height 0.2s;">
+            <label for="fname">City:</label>
+            <input type="text" id="step0Input" name="city" value="hebei">
+            <button onclick="Step0()">Import Data</button>
+            <br>
+        </div>
+    </div>
+    <div style="height: 10px;"></div>
+    <div class="plane">
+        <div id="step1title" style="height: 22px; background-color: #FFE08B; text-align: center;" onclick="onTileClick1()">
+            Step 1: 将地名和位置写入csv
+        </div>
+        <div id="step1content" style="height:0px;background-color: #FFFAB9;transition: height 0.2s;">
+            <label for="fname">Data:</label>
+            <select id="step1Select">
+                <option value ="node">Node</option>
+                <option value ="Way">Way</option>
+            </select>
+            <br>
+            <label for="fname">Key:</label>
+            <input type="text" id="step1Key" name="key" value="amenity"><br>
+            <label for="fname">Value:</label>
+            <input type="text" id="step1Value" name="value" value="library"><br>
+            <label for="fname">Folder:</label>
+            <input type="text" id="step1Folder" name="folder" value="tmpdata"><br>
+            <label for="fname">Write:</label>
+            <select id="step1Write">
+                <option value ="No">No</option>
+                <option value ="Yes">Yes</option>
+            </select><br>
+            <button onclick="Step1()">Write Data</button>
+            <br>
+        </div>
+    </div>
+    <div style="height: 10px;"></div>
+    <div class="plane">
+        <div id="step2title" style="height: 22px; background-color: #FFE08B; text-align: center;" onclick="onTileClick2()">
+            Step 2: KNN
+        </div>
+        <div id="step2content" style="height:0px;background-color: #FFFAB9;transition: height 0.2s;">
+            <label for="fname">Data:</label>
+            <select id="step2Select">
+                <option value ="node">Node</option>
+                <option value ="Way">Way</option>
+            </select><br>
+            <label for="fname">Number:</label>
+            <input type="number" id="step2Num" name="num" value="4"><br>
+            <label for="fname">Latitude:</label>
+            <input type="number" id="step2Lat" name="lat" value="39"><br>
+            <label for="fname">Longitude:</label>
+            <input type="number" id="step2Lng" name="lng" value="40"><br>
+            <label for="fname">Key:</label>
+            <input type="text" id="step2Key" name="key" value="amenity"><br>
+            <label for="fname">Value:</label>
+            <input type="text" id="step2Value" name="value" value="library"><br>
+            <label for="fname">Folder:</label>
+            <input type="text" id="step2Folder" name="folder" value="tmpdata"><br>
+            <label for="fname">Write:</label>
+            <select id="step2Write">
+                <option value ="No">No</option>
+                <option value ="Yes">Yes</option>
+            </select><br>
+            <button onclick="Step2()">KNN</button>
+            <br>
+        </div>
+    </div>
+
+    <div style="height: 10px;"></div>
+    <div class="plane">
+        <div id="step3title" style="height: 22px; background-color: #FFE08B; text-align: center;" onclick="onTileClick3()">
+            Step 3: distance 距离查询
+        </div>
+        <div id="step3content" style="height:0px;background-color: #FFFAB9;transition: height 0.2s;">
+            <label for="fname">Data:</label>
+            <select id="step3Select">
+                <option value ="node">Node</option>
+                <option value ="Way">Way</option>
+            </select>
+            &nbsp&nbsp
+            <label for="fname">Method:</label>
+            <select id="step3Method">
+                <option value ="name">name</option>
+                <option value ="id">id</option>
+            </select>
+            <br>
+            <label for="fname">Key1:</label>
+            <input type="text" id="step3Key1" name="key1" value="密云图书馆"><br>
+            <label for="fname">Key2:</label>
+            <input type="text" id="step3Key2" name="key2" value="西二旗"><br>
+            <button onclick="Step3()">Distance</button>
+            <br>
+        </div>
+    </div>
+
+    <div style="height: 10px;"></div>
+    <div class="plane">
+        <div id="step4title" style="height: 22px; background-color: #FFE08B; text-align: center;" onclick="onTileClick4()">
+            Step 4: spatial_range_query 范围查询
+        </div>
+        <div id="step4content" style="height:0px;background-color: #FFFAB9;transition: height 0.2s;">
+            <label for="fname">Data:</label>
+            <select id="step4Select">
+                <option value ="node">Node</option>
+                <option value ="Way">Way</option>
+            </select><br>
+            <label for="fname">Window:</label>
+            <input type="number" id="step4Window1" name="num1" value="38" style="width:3em">
+            <input type="number" id="step4Window2" name="num2" value="40" style="width:3em">
+            <input type="number" id="step4Window3" name="num3" value="116" style="width:3em">
+            <input type="number" id="step4Window4" name="num4" value="119" style="width:3em">
+            <br>
+            <label for="fname">Key:</label>
+            <input type="text" id="step4Key" name="key" size="5" value="amenity"><br>
+            <label for="fname">Value:</label>
+            <input type="text" id="step4Value" name="value" size="5" value="library"><br>
+            <label for="fname">Folder:</label>
+            <input type="text" id="step4Folder" name="folder" value="tmpdata"><br>
+            <label for="fname">Write:</label>
+            <select id="step4Write">
+                <option value ="No">No</option>
+                <option value ="Yes">Yes</option>
+            </select><br>
+            <button onclick="Step4()">Query</button>
+            <br>
+        </div>
+    </div>
+
+    <div style="height: 10px;"></div>
+    <div class="plane">
+        <div id="step5title" style="height: 22px; background-color: #FFE08B; text-align: center;" onclick="onTileClick5()">
+            Step 5: locate_point & locate 定位
+        </div>
+        <div id="step5content" style="height:0px;background-color: #FFFAB9;transition: height 0.2s;">
+            <label for="fname">Data:</label>
+            <select id="step5_1Select">
+                <option value ="node">Node</option>
+                <option value ="Way">Way</option>
+            </select><br>
+            <label for="fname">Name:</label>
+            <input type="text" id="step5_1Name" name="name" value="海淀北部文化中心"><br>
+            <label for="fname">Folder:</label>
+            <input type="text" id="step5_1Folder" name="folder" value="tmpdata"><br>
+            <label for="fname">Write:</label>
+            <select id="step5_1Write">
+                <option value ="No">No</option>
+                <option value ="Yes">Yes</option>
+            </select><br>
+            <button onclick="Step5_1()">Locate Point</button>
+            <br>
+            <label for="fname">Name:</label>
+            <input type="text" id="step5_2Name" name="name" value="天安门广场东"><br>
+            <label for="fname">Folder:</label>
+            <input type="text" id="step5_2Folder" name="folder" value="tmpdata"><br>
+            <label for="fname">Write:</label>
+            <select id="step5_2Write">
+                <option value ="No">No</option>
+                <option value ="Yes">Yes</option>
+            </select><br>
+            <button onclick="Step5_2()">Locate</button>
+            <br>        
+        </div>
+    </div>
+
+    <div style="height: 10px;"></div>
+    <div class="plane">
+        <div id="step6title" style="height: 22px; background-color: #FFE08B; text-align: center;" onclick="onTileClick6()">
+            Step 6: name2polygon 查找区域
+        </div>
+        <div id="step6content" style="height:0px;background-color: #FFFAB9;transition: height 0.2s;">
+            <label for="fname">Data:</label>
+            <select id="step6Select">
+                <option value ="Way">Way</option>
+                <option value ="node">Node</option>
+            </select><br>
+            <label for="fname">Name:</label>
+            <input type="text" id="step6Name" name="name" value="军博西路"><br>
+            <label for="fname">Folder:</label>
+            <input type="text" id="step6Folder" name="folder" value="tmpdata"><br>
+            <label for="fname">Write:</label>
+            <select id="step6Write">
+                <option value ="No">No</option>
+                <option value ="Yes">Yes</option>
+            </select><br>
+            <button onclick="Step6()">Search</button>
+            <br>    
+        </div>
+    </div>
+</div>  
+</div>
+
+<div id="output-father">
+    <h3>OUTPUT<h3>
+    <div id="output"></div>
+</div>
+
+<script>
+// var content = document.getElementById("content");
+// function onTileClick() {
+//     content.style.height = content.offsetHeight===150?0+'px':150+'px';
+// }
+
+function onTileClick0() {
+    var content = document.getElementById("step0content");
+    content.style.height = content.offsetHeight===25?0+'px':25+'px';
+}
+
+function onTileClick1() {
+    var content = document.getElementById("step1content");
+    content.style.height = content.offsetHeight===140?0+'px':140+'px';
+}
+
+function onTileClick2() {
+    var content = document.getElementById("step2content");
+    content.style.height = content.offsetHeight===210?0+'px':210+'px';
+}
+
+function onTileClick3() {
+    var content = document.getElementById("step3content");
+    content.style.height = content.offsetHeight===90?0+'px':90+'px';
+}
+
+function onTileClick4() {
+    var content = document.getElementById("step4content");
+    content.style.height = content.offsetHeight===165?0+'px':165+'px';
+}
+
+function onTileClick5() {
+    var content = document.getElementById("step5content");
+    content.style.height = content.offsetHeight===205?0+'px':205+'px';
+}
+
+function onTileClick6() {
+    var content = document.getElementById("step6content");
+    content.style.height = content.offsetHeight===120?0+'px':120+'px';
+}
+
+
+async function Step0(){
+    step0_city = document.getElementById("step0Input").value;
+    console.log(step0_city);
+    $('#output').html("waiting...");
+    await $.ajax({
+        url:"http://127.0.0.1:5000/step0",
+        data:  JSON.stringify({"message": step0_city}),
+        contentType: "application/json",
+        error:function () {
+            alert("接收失败")
+        },
+        success: function(e) {
+            alert("接收成功")
+            // $('#output').html("Successfully load \""+e.way+"\".<br>Successfully load \""+e.node+"\".")
+            $('#output').html("Way:<br>"+e.way+"<br>Node:<br>"+e.node)
+        },
+        type: "POST"
+    });
+}
+
+async function Step1(){
+    step_data = document.getElementById("step1Select").value;
+    step_key = document.getElementById("step1Key").value;
+    step_value = document.getElementById("step1Value").value;
+    step_folder = document.getElementById("step1Folder").value;
+    step_write = document.getElementById("step1Write").value;
+    console.log(step_data, step_key, step_value, step_folder, step_write);
+    $('#output').html("waiting...");
+    await $.ajax({
+        url:"http://127.0.0.1:5000/step1",
+        data:  JSON.stringify({
+            'data': step_data,
+            'key': step_key,
+            'value': step_value,
+            'folder': step_folder,
+            'write': step_write
+        }),
+        contentType: "application/json",
+        error:function () {
+            alert("接收失败")
+        },
+        success: function(e) {
+            alert("接收成功")
+            $('#output').html(e.result)
+        },
+        type: "POST"
+    });
+}
+
+async function Step2(){
+    step_data = document.getElementById("step2Select").value;
+    step_num = document.getElementById("step2Num").value;
+    step_lat = document.getElementById("step2Lat").value;
+    step_lng = document.getElementById("step2Lng").value;
+    step_key = document.getElementById("step2Key").value;
+    step_value = document.getElementById("step2Value").value;
+    step_folder = document.getElementById("step2Folder").value;
+    step_write = document.getElementById("step2Write").value;
+    console.log(step_data, step_num, step_lat, step_lng, step_key, step_value, step_folder, step_write);
+    $('#output').html("waiting...");
+    await $.ajax({
+        url:"http://127.0.0.1:5000/step2",
+        data:  JSON.stringify({
+            'data': step_data,
+            'num': step_num,
+            'lat': step_lat,
+            'lng': step_lng,
+            'key': step_key,
+            'value': step_value,
+            'folder': step_folder,
+            'write': step_write
+        }),
+        contentType: "application/json",
+        error:function () {
+            alert("接收失败")
+        },
+        success: function(e) {
+            alert("接收成功")
+            $('#output').html(e.result)
+        },
+        type: "POST"
+    });
+}
+
+async function Step3(){
+    step_data = document.getElementById("step3Select").value;
+    step_key1 = document.getElementById("step3Key1").value;
+    step_key2 = document.getElementById("step3Key2").value;
+    step_method = document.getElementById("step3Method").value;
+    console.log(step_data, step_key1, step_key2, step_method);
+    $('#output').html("waiting...");
+    await $.ajax({
+        url:"http://127.0.0.1:5000/step3",
+        data:  JSON.stringify({
+            'data': step_data,
+            'key1': step_key1,
+            'key2': step_key2,
+            'method': step_method
+        }),
+        contentType: "application/json",
+        error:function () {
+            alert("接收失败")
+        },
+        success: function(e) {
+            alert("接收成功")
+            $('#output').html("Distance:<br>"+e.result)
+        },
+        type: "POST"
+    });
+}
+
+async function Step4(){
+    step_data = document.getElementById("step4Select").value;
+    step_num1 = document.getElementById("step4Window1").value;
+    step_num2 = document.getElementById("step4Window2").value;
+    step_num3 = document.getElementById("step4Window3").value;
+    step_num4 = document.getElementById("step4Window4").value;
+    step_key = document.getElementById("step4Key").value;
+    step_value = document.getElementById("step4Value").value;
+    step_folder = document.getElementById("step4Folder").value;
+    step_write = document.getElementById("step4Write").value;
+    console.log(step_data, step_num1, step_num2, step_num3, step_num4, step_key, step_value, step_folder, step_write);
+    $('#output').html("waiting...");
+    await $.ajax({
+        url:"http://127.0.0.1:5000/step4",
+        data:  JSON.stringify({
+            'data': step_data,
+            'num1': step_num1,
+            'num2': step_num2,
+            'num3': step_num3,
+            'num4': step_num4,
+            'key': step_key,
+            'value': step_value,
+            'folder': step_folder,
+            'write': step_write
+        }),
+        contentType: "application/json",
+        error:function () {
+            alert("接收失败")
+        },
+        success: function(e) {
+            alert("接收成功")
+            $('#output').html(e.result)
+        },
+        type: "POST"
+    });
+}
+
+async function Step5_1(){
+    step_data = document.getElementById("step5_1Select").value;
+    step_name = document.getElementById("step5_1Name").value;
+    step_folder = document.getElementById("step5_1Folder").value;
+    step_write = document.getElementById("step5_1Write").value;
+    console.log(step_data, step_name, step_folder, step_write);
+    $('#output').html("waiting...");
+    await $.ajax({
+        url:"http://127.0.0.1:5000/step5_1",
+        data:  JSON.stringify({
+            'data': step_data,
+            'name': step_name,
+            'folder': step_folder,
+            'write': step_write
+        }),
+        contentType: "application/json",
+        error:function () {
+            alert("接收失败")
+        },
+        success: function(e) {
+            alert("接收成功")
+            $('#output').html(e.result)
+        },
+        type: "POST"
+    });
+}
+
+async function Step5_2(){
+    step_name = document.getElementById("step5_2Name").value;
+    step_folder = document.getElementById("step5_2Folder").value;
+    step_write = document.getElementById("step5_2Write").value;
+    console.log(step_data, step_name, step_folder, step_write);
+    $('#output').html("waiting...");
+    await $.ajax({
+        url:"http://127.0.0.1:5000/step5_2",
+        data:  JSON.stringify({
+            'name': step_name,
+            'folder': step_folder,
+            'write': step_write
+        }),
+        contentType: "application/json",
+        error:function () {
+            alert("接收失败")
+        },
+        success: function(e) {
+            alert("接收成功")
+            $('#output').html(e.pathname+"<br>"+e.geom)
+        },
+        type: "POST"
+    });
+}
+
+async function Step6(){
+    step_data = document.getElementById("step6Select").value;
+    step_name = document.getElementById("step6Name").value;
+    step_folder = document.getElementById("step6Folder").value;
+    step_write = document.getElementById("step6Write").value;
+    console.log(step_data, step_name, step_folder, step_write);
+    $('#output').html("waiting...");
+    await $.ajax({
+        url:"http://127.0.0.1:5000/step6",
+        data:  JSON.stringify({
+            'data': step_data,
+            'name': step_name,
+            'folder': step_folder,
+            'write': step_write
+        }),
+        contentType: "application/json",
+        error:function () {
+            alert("接收失败")
+        },
+        success: function(e) {
+            alert("接收成功")
+            $('#output').html(e.result)
+        },
+        type: "POST"
+    });
+}
+
+</script>
+
+</body>
+</html>
